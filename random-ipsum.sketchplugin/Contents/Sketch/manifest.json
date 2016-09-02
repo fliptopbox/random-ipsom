@@ -1,0 +1,34 @@
+{
+  "name" : "Random Ipsum",
+  "description" : "A latin text generator similar to Lorem Ipsum. The plugin outputs randomly ordered paragraph text with three variations. You can use a random word count, a specific word count or inject random content into an existing text blocks.",
+
+  "author": "Bruce Thomas",
+  "authorEmail" : "response.write@gmail.com",
+
+  "version" : "1.0",
+  "compatibleVersion": 3,
+
+  "identifier" : "com.example.sketch.2c956d7d-acd4-4b0d-92a0-d5860365ec4b",
+  "homepage": "https://github.com/fliptopbox/random-ipsom",
+
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "name" : "Random Ipsum",
+      "shortcut": "ctrl shift l",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ],
+    "isRoot": true,
+    "title" : "random-ipsum"
+  }
+  
+}
