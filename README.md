@@ -1,7 +1,7 @@
 # Random Ipsom
-A latin text generator similar to Lorem Ipsum. The plugin outputs randomly ordered paragraph text with three variations. You can use a random word count, a specific word count or injected text into existing text blocks.
+A latin text generator similar to Lorem Ipsum. The plugin outputs randomly ordered paragraph text with three variations. You can use a random word count, a specific word count or inject random text into an existing text block.
 
-## use cases
+## Usage variations
 
 ### Random word count (default)
 - Create a new text layer on the canvas
