@@ -8,7 +8,8 @@ A latin text generator similar to Lorem Ipsum. The plugin outputs randomly order
 - Run the plugin, and it will generate random text with a random word count
 
 **Example**
-  "Type something"
+
+    Type something
 
 
 ### Specified word count
@@ -16,22 +17,20 @@ A latin text generator similar to Lorem Ipsum. The plugin outputs randomly order
 - Run the plugin, this will generate thrteen random words.
 
 **Example**
-  :13
+
+    :13
 
 ### Inject random content
 - Edit an existing paragraph, and inset counter tokkens on their own line (e.g. :23)
 - Run the plugin, this will replace each tokken with a coresponding random sentence.
 
 **Example**
-  This is a sentence. We don't want to change this.
-  
-  :8
-  
-  Then there is another sentence, that we want to keep as it is.
-  
-  :13
-  
-  The end.
+
+    This is a sentence. We don't want to change this.
+    :8
+    Then there is another sentence, that we want to keep as it is.
+    :13
+    The end.
 
 
 ## Things to note
