@@ -17,4 +17,4 @@ A latin text generator similar to Lorem Ipsum. The plugin outputs randomly order
 
 ## Things to note
 
-There is a minimum word count, three, this comes from "Lorem ipsum dolor", there is no maximum word count. If you generate a random paragraph, and run the plugin again, it will respect the existing word count.
+There is a minimum word count, three, this comes from "Lorem ipsum dolor", there is no maximum word count. If you generate a random paragraph, and run the plugin again, it will respect the existing word count. The plugin will generate random content on a text block that are named "Type something", to prevent acciedents just rename the layer to something meaningful.
