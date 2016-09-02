@@ -3,11 +3,13 @@ var onRun = function(context) {
     var documentName = context.document.displayName();
     var selectedLayers = context.selection;
     var selectedCount = selectedLayers.count();
+
     var loremArray = [
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac sollicitudin nisl. Proin non lectus a mi vulputate feugiat vel nec nibh. Donec vehicula eu metus eget molestie. Sed vel tempus quam. Nam consectetur lacus lorem, rhoncus laoreet sapien porttitor vitae. Morbi metus erat, tincidunt eget nunc quis, luctus tincidunt nisi. Nunc viverra ipsum sed urna tempus, ac consectetur turpis ullamcorper. In tempus volutpat ultrices. Etiam vestibulum massa neque, a condimentum erat ultrices in. Morbi aliquet risus vitae iaculis iaculis.",
         "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam efficitur, orci dictum pharetra laoreet, felis mi scelerisque augue, a pharetra nunc odio id ligula. Nam aliquet vestibulum euismod. Cras id augue ut magna placerat pharetra at ut elit. Quisque ultricies tortor urna, at efficitur urna ultricies vitae. Quisque id tincidunt lectus. Praesent in magna in arcu malesuada pellentesque. Praesent imperdiet sem interdum, bibendum quam ac, fringilla lorem. Morbi a felis nec arcu tincidunt tincidunt. Fusce vitae nibh at lectus maximus volutpat vitae vitae mi. In eu pharetra felis.",
         "Nam dapibus nibh vel commodo ornare. Quisque ac sollicitudin erat. Donec nec rhoncus ex, eget sagittis risus. Cras eu dui a sapien faucibus lacinia eu id ante. Donec rutrum, velit non tempor egestas, augue tortor gravida leo, non ultrices nunc neque ac dolor. Mauris augue metus, pulvinar ut nisi quis, auctor ornare mauris. Morbi eu massa arcu. Vestibulum vestibulum at felis porta semper. Donec congue lorem at turpis iaculis, a ullamcorper lacus vehicula. Donec sed diam volutpat, luctus urna ac, fringilla odio. Suspendisse lobortis neque lorem, eu condimentum elit eleifend eu. Suspendisse consequat ipsum sit amet hendrerit viverra. Proin nibh justo, mattis in velit sed, aliquet mollis quam. Suspendisse fermentum accumsan purus, vel finibus ex lobortis vitae. Curabitur tempor vitae massa sed facilisis."
     ].join(' ').split(' ');
+
     var loremIpsum = loremArray.splice(0,2);
     var lastWord = null;
     var minWords = 3;
@@ -30,18 +32,6 @@ var onRun = function(context) {
         return String(output + '.').replace(/[\,\.\-]\.$/, '.');
     };
 
-    var getIntValue = function (string) {
-        var output = String(string || '').replace(/[^0-9]/gi, '');
-        output = Math.floor(output) || 0;
-        return output;
-    };
-
-    var getRandomInt = function (min, max) {
-        min = min || 0;
-        max = max || loremArray.length;
-        return parseInt(Math.random() * (max - min) + min, 10);
-    };
-
     var getRandomWord = function () {
         var min = 0;
         var max = loremArray.length;
@@ -54,6 +44,18 @@ var onRun = function(context) {
         return loremArray[index];
     };
 
+    var getIntValue = function (string) {
+        var output = String(string || '').replace(/[^0-9]/gi, '');
+        output = Math.floor(output) || 0;
+        return output;
+    };
+
+    var getRandomInt = function (min, max) {
+        min = min || 0;
+        max = max || loremArray.length;
+        return parseInt(Math.random() * (max - min) + min, 10);
+    };
+
 
     // Exit if no text layers are selectd
     if (selectedCount == 0) {
@@ -61,41 +63,46 @@ var onRun = function(context) {
         return;
     } 
 
-    // Populate the respecive layers
+    // Examine each text layer, and insert text
     for (var i = 0; i < selectedCount; i++) {
 
         log("GENERATE LATIN FOR LAYER " + (i + 1));
 
-        var intValue = null;
-        var output = null;
+        var i, line, intValue, output;
         var layer = selectedLayers[i];
-        var text = layer.stringValue();
+        var text = (layer.stringValue() || '').trim();
         var paragraphs = text.split('\n');
-        var rex = new RegExp("^[#:]([0-9]+)");
-        var rex2 = new RegExp(("^" + defaultString), "i"); 
+        var tokken = new RegExp("^[#:]([0-9]+)$");
+        var rex = new RegExp(("^" + defaultString + "$"), "i"); 
 
-        var isNewLayer = rex2.test(layer.name());
+        var isNewLayer = rex.test(layer.name());
+        var isDefaultText = rex.test(text);
         var currentLen = text.split(' ').length || 0;
         
-        // Look for trigger string i.e. ":12" === 12 words
-        var trigger = text.match(rex) || [0, 0];
+        // Look for tokken trigger string
+        // For example: ":12" === 12 words
+
+        var trigger = text.match(tokken) || [0, 0];
         var triggerInt = Math.floor(trigger[1]);
         triggerInt = triggerInt >= minWords ? triggerInt : 0;
 
         log('TRIGGER? ' + triggerInt);
         log('LAYER NAME ' + layer.name());
+        log('PARAGRAPHS ' + paragraphs.length);
+        log('NEW LAYER ' + isNewLayer);
+        log('DEFAULT TEXT ' + isDefaultText);
 
-        // If this is a paragraph, then loop over each line
-        // and inject random text to replace trigger counters
+        // If block has paragraph breaks, then loop each line
+        // to replace trigger counters.
 
-        if (paragraphs.length) {
+        if (paragraphs.length > 1) {
             log('LAYER VALUE ' + layer);
             log('TEXT VALUE ' + text);
             log('PARAGRAPHS ' + paragraphs.length);
             log('PARSE BY LINE !!!!!');
-            for(var i = 0; i < paragraphs.length; i +=1) {
-                var line = paragraphs[i];
-                if (/^[\:\#][0-9]+$/.test(line)) {
+            for(i = 0; i < paragraphs.length; i +=1) {
+                line = paragraphs[i];
+                if (tokken.test(line)) {
                     log('REPLACE TRIGGER');
                     intValue = getIntValue(line);
                     paragraphs[i] = getRandomParagraph(intValue);
@@ -106,23 +113,26 @@ var onRun = function(context) {
             return;
         }
 
-        // Check for NEW layer i.e. stringValue === "type something"
 
-        // Output checks for word count:
-        // Length trigger detected
-        // NEW layer with no trigger
-        // Existing paragraph word count
-        // (default) Random word count
+        // Protect named text layers from being replaced by non-sence
+        if (!tokken.test(text) && !isNewLayer) {
+            log('IGNORING: ' + layer.name());
+            return;
+        }
 
-        var wordCount = isNewLayer ? getRandomInt(minWords, maxWords) : 0;
+        // determine the output word count
+        // priority: new layer (random), trigger (int), existing count (int), generate count (random)
+
+        var wordCount = isNewLayer &&  isDefaultText ? getRandomInt(minWords, maxWords) : 0;
         wordCount = triggerInt || wordCount || currentLen || 0;
         wordCount = wordCount >= minWords ? wordCount : getRandomInt(minWords);
         
         log('NEW LAYER? ' + isNewLayer);
         log('PARAGRAPH LENGTH: ' + wordCount);
 
+        // Reset layername to default text, for regenerating again.
         layer.stringValue = getRandomParagraph(wordCount);
+        layer.name = defaultString.replace(/^(.)/, function (a, b) { return a.toUpperCase()});
 
     };
-
 };
